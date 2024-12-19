@@ -4,7 +4,6 @@ from model import create_model
 from prepare_data import prepare_data
 import os
 
-
 def train():
     mlflow.set_experiment("cats-dogs-classification")
     
@@ -27,10 +26,10 @@ def train():
 
         # Обучение модели
         history = model.fit(
-            train_generator.repeat(),
+            train_generator,
             steps_per_epoch=steps_per_epoch,
             epochs=20,
-            validation_data=validation_generator.repeat(),
+            validation_data=validation_generator,
             validation_steps=validation_steps
         )
 
@@ -47,7 +46,6 @@ def train():
 
         # Логируем модель в MLflow
         mlflow.log_artifact(model_path, artifact_path="model")
-
 
 if __name__ == "__main__":
     train()

@@ -1,14 +1,14 @@
-import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-def prepare_data(data_dir='data/cats_and_dogs_filtered', img_height=150, img_width=150):
-    train_dir = f'{data_dir}/train'
-    validation_dir = f'{data_dir}/validation'
-    
-    # Создаем генератор данных с аугментацией для тренировочного набора
+def prepare_data():
+    # Пути к данным
+    train_dir = 'data/cats_and_dogs_filtered/train'
+    validation_dir = 'data/cats_and_dogs_filtered/validation'
+
+    # Аугментация для тренировочных данных
     train_datagen = ImageDataGenerator(
         rescale=1./255,
-        rotation_range=20,
+        rotation_range=40,
         width_shift_range=0.2,
         height_shift_range=0.2,
         shear_range=0.2,
@@ -17,24 +17,22 @@ def prepare_data(data_dir='data/cats_and_dogs_filtered', img_height=150, img_wid
         fill_mode='nearest'
     )
 
-    # Генератор данных для валидационного набора (только нормализация)
-    val_datagen = ImageDataGenerator(rescale=1./255)
+    # Только нормализация для валидационных данных
+    test_datagen = ImageDataGenerator(rescale=1./255)
 
     train_generator = train_datagen.flow_from_directory(
         train_dir,
-        target_size=(img_height, img_width),
+        target_size=(150, 150),
         batch_size=32,
-        class_mode='binary'
+        class_mode='binary',
+        shuffle=True
     )
 
-    validation_generator = val_datagen.flow_from_directory(
+    validation_generator = test_datagen.flow_from_directory(
         validation_dir,
-        target_size=(img_height, img_width),
+        target_size=(150, 150),
         batch_size=32,
         class_mode='binary'
     )
-    
-    return train_generator, validation_generator
 
-if __name__ == "__main__":
-    prepare_data()
+    return train_generator, validation_generator
