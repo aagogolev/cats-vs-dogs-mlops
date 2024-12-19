@@ -1,0 +1,57 @@
+name: ML Pipeline
+on: [push]
+
+jobs:
+  train-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11.8'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Download dataset
+        run: python src/download_data.py
+        
+      - name: Train model
+        run: python src/train.py
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: model-${{ github.sha }}
+          release_name: Model Release ${{ github.sha }}
+          draft: false
+          prerelease: false
+          
+      - name: Upload Model Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: models/latest/model.keras
+          asset_name: model.keras
+          asset_content_type: application/octet-stream
+          
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/cats-dogs-classifier:latest,${{ secrets.DOCKER_HUB_USERNAME }}/cats-dogs-classifier:${{ github.sha }}
+
