@@ -18,7 +18,7 @@ def train():
         mlflow.log_param("optimizer", "adam")
         mlflow.log_param("loss", "binary_crossentropy")
         mlflow.log_param("batch_size", 32)
-        mlflow.log_param("epochs", 20)
+        mlflow.log_param("epochs", 10)
 
         # Вычисляем steps_per_epoch и validation_steps
         steps_per_epoch = len(train_generator.filenames) // train_generator.batch_size

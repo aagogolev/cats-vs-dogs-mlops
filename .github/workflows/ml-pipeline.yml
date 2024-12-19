@@ -2,6 +2,10 @@ name: ML Pipeline
 
 on: [push]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   train:
     runs-on: ubuntu-latest
