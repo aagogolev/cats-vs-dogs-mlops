@@ -72,6 +72,9 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            GITHUB_REPOSITORY=${{ github.repository }}
+            GITHUB_SHA=${{ github.sha }}
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/cats-dogs-classifier:latest
             ${{ secrets.DOCKER_HUB_USERNAME }}/cats-dogs-classifier:${{ github.sha }}

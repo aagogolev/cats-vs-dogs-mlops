@@ -28,7 +28,7 @@ def train():
         history = model.fit(
             train_generator,
             steps_per_epoch=steps_per_epoch,
-            epochs=20,
+            epochs=10,
             validation_data=validation_generator,
             validation_steps=validation_steps
         )

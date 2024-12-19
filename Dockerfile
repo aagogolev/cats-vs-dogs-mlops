@@ -1,5 +1,8 @@
 FROM python:3.11.8-slim
 
+ARG GITHUB_REPOSITORY
+ARG GITHUB_SHA
+
 WORKDIR /app
 
 COPY requirements.txt .
